@@ -300,14 +300,19 @@ class PluginCertInfo(PluginBase.PluginBase):
         return ([val_txt], [val_xml]) 
 
     def _get_full(self, cert):
-        # TODO: Proper parsing of the cert for XML output
+        (txt, xml) = self._get_detail(cert)
+
         full_cert = cert.as_text()
         # Removing the first and the last lines
         full_cert = full_cert.rsplit('\n', 1)[0]
         full_cert_txt = full_cert.split('\n', 1)[1]
         full_cert_xml = Element('raw-certificate')
         full_cert_xml.text = full_cert_txt
-        return ([full_cert_txt], [full_cert_xml])
+
+        full_cert_header = self.FIELD_FORMAT.format('Full Certificate', '')
+        txt.extend([full_cert_header, full_cert_txt])
+        xml.extend([full_cert_xml])
+        return (txt, xml)
         
 
     def _get_cert(self, target, verify_cert=False):
